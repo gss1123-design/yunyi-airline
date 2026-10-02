@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hakimi.aviation.mapper.OrderMapper">
+
+    <update id="cancelUnpaidOrder">
+        UPDATE `ticket_order`
+        SET `status` = "CANCELLED"
+        WHERE `id` = #{order_id}
+          AND `status` = "UNPAID"
+    </update>
+
+    <update id="updateStatusToPaid">
+        UPDATE `ticket_order`
+        SET
+            `status` = "PAID",
+            `pay_trade_no` = #{pay_trade_no}
+        WHERE `id` = #{order_id}
+        AND `status` = "UNPAID"
+    </update>
+
+    <update id="updateStatusToRefunding">
+
+        UPDATE `ticket_order`
+        SET
+            `status` = "REFUNDING"
+        WHERE `id` = #{order_id}
+        AND `user_id` = #{user_id}
+        AND `status` = "PAID"
+
+    </update>
+
+    <update id="updateStatusToRefunded">
+
+        UPDATE `ticket_order`
+        SET
+            `status` = "REFUNDED"
+        WHERE `id` = #{order_id}
+          AND `user_id` = #{user_id}
+          AND `status` = "REFUNDING"
+
+    </update>
+
+    <update id="revertRefundingToPaid">
+
+        UPDATE `ticket_order`
+        SET
+            `status` = "PAID"
+        WHERE `id` = #{order_id}
+          AND `user_id` = #{user_id}
+          AND `status` = "REFUNDING"
+
+    </update>
+
+    <select id="getOrderHistory" resultType="java.lang.Long">
+        SELECT `flight_id`
+        FROM `ticket_order`
+        WHERE `user_id` = #{user_id}
+        AND `status` IN ('UNPAID','PAID')
+    </select>
+
+    <select id="selectStatusByOrderId" resultType="java.lang.String">
+
+        SELECT `status`
+        FROM `ticket_order`
+        WHERE `id` = #{order_id}
+
+    </select>
+
+    <select id="selectSeatOffsetById" resultType="java.lang.Integer">
+
+        SELECT `seat_offset`
+        FROM `ticket_order`
+        WHERE `id` = #{order_id}
+
+    </select>
+
+    <!-- 订单查询公共列：订单字段 + 航班展示字段，别名直接对应 OrderVO 属性 -->
+    <sql id="orderVoColumns">
+        o.id             AS orderId,
+        o.order_no       AS orderNo,
+        o.status         AS status,
+        o.total_price    AS totalPrice,
+        o.seat_offset    AS seatOffset,
+        o.passenger_name AS passengerName,
+        o.pay_trade_no   AS payTradeNo,
+        o.created_at     AS createdAt,
+        o.flight_id      AS flightId,
+        f.flight_no      AS flightNo,
+        f.dept_city      AS deptCity,
+        f.arr_city       AS arrCity,
+        f.flight_date    AS flightDate,
+        f.dept_time      AS deptTime,
+        f.arr_time       AS arrTime
+    </sql>
+
+    <select id="listOrdersByUser" resultType="com.hakimi.aviation.model.vo.OrderVO">
+        SELECT
+        <include refid="orderVoColumns"/>
+        FROM `ticket_order` o
+        LEFT JOIN `flight` f ON o.flight_id = f.id
+        WHERE o.user_id = #{userId}
+        <if test="status != null and status != ''">
+            AND o.status = #{status}
+        </if>
+        ORDER BY o.created_at DESC
+    </select>
+
+    <select id="getOrderDetail" resultType="com.hakimi.aviation.model.vo.OrderVO">
+        SELECT
+        <include refid="orderVoColumns"/>
+        FROM `ticket_order` o
+        LEFT JOIN `flight` f ON o.flight_id = f.id
+        WHERE o.id = #{orderId}
+          AND o.user_id = #{userId}
+    </select>
+
+</mapper>

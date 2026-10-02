@@ -1,0 +1,16 @@
+[
+  {
+    "flightNo": "HA2002",
+    "deptCity": "北京",
+    "arrCity": "成都",
+    "totalPrice": 800.00,
+    "segmentTemplateIds": [3]
+  },
+  {
+    "flightNo": "HA1001",
+    "deptCity": "哈尔滨",
+    "arrCity": "成都",
+    "totalPrice": 1200.00,
+    "segmentTemplateIds": [13, 3]
+  }
+]

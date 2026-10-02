@@ -1,0 +1,81 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: aviation-system
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  datasource:
+    url: jdbc:mysql://${DB_HOST:127.0.0.1}:3306/hajimi_aviation?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:root}
+    password: ${HAKIMI_DB_PWD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  cache:
+    type: redis
+
+  data:
+    redis:
+      host: ${SERVER_IP:127.0.0.1}
+      port: 6379
+      password: ${HAKIMI_REDIS_PWD}
+      database: 1                   # 本系统使用一号库
+      timeout: 10000ms
+
+      lettuce:
+        pool:
+          # 连接池最大连接数（使用负值表示没有限制）
+          max-active: 32
+          # 连接池中的最大空闲连接
+          max-idle: 16
+          # 连接池中的最小空闲连接
+          min-idle: 4
+          # 连接池最大阻塞等待时间（使用负值表示没有限制）
+          max-wait: 10000ms
+
+  rabbitmq:
+    host: ${SERVER_IP:127.0.0.1}
+    port: 5672
+    virtual-host: /hakimi_airline
+    password: ${HAKIMI_RABBITMQ_PWD}
+    username: admin
+    listener:
+      simple:
+        acknowledge-mode: manual # 开启手动 ACK
+        prefetch: 1 # 每次只抓取 1 条消息
+        retry:
+          enabled: true # 开启消费者重试机制
+          max-attempts: 3 # 最大重试次数（包括第一次消费，即最多失败重试2次）
+          initial-interval: 1000ms # 第一次重试的间隔时间
+          multiplier: 2 # 每次重试间隔时间的乘数（1s -> 2s -> 4s）
+
+  mail:
+    host: smtp.qq.com # QQ邮箱的SMTP服务器
+    port: 465         # SSL加密端口
+    username: ${EMAIL_HOST} # 发件邮箱
+    password: ${EMAIL_PWD}      # 授权码
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true # 开启SSL，防止发送失败
+
+
+# 支付宝沙箱配置
+alipay:
+  app-id: "9021000163611894" # 沙箱 AppID
+  gateway-url: "https://openapi-sandbox.dl.alipaydev.com/gateway.do"
+  # 应用私钥
+  app-private-key: "${ALIPAY_PRIVATE_KEY}"
+  #支付宝公钥
+  alipay-public-key: "${ALIPAY_PUBLIC_KEY}"
+  # 签名方式 默认 RSA2
+  sign-type: "RSA2"
+  # 字符集，固定为 UTF-8
+  charset: "UTF-8"
+  # 返回格式，固定为 json
+  format: "json"

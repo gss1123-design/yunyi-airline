@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hakimi.aviation.mapper.SegmentInstanceMapper">
+
+
+    <update id="deductStockByFlightId">
+
+        UPDATE `segment_instance`
+        SET `available_seats` = `available_seats` - #{num}
+
+        WHERE id IN (
+            -- 通过关联表，直接找出这个航班对应的所有航段实例 ID
+            SELECT `segment_instance_id`
+            FROM flight_segment
+            WHERE `flight_id` = #{flight_id}
+        )
+          -- 保证扣减后不小于 0
+          AND available_seats >= #{num}
+
+    </update>
+
+    <update id="rollbackStockByFlightId">
+
+        UPDATE `segment_instance`
+        SET `available_seats` = `available_seats` + #{num}
+
+        WHERE `id` IN (
+            -- 通过关联表，直接找出这个航班对应的所有航段实例 ID
+            SELECT `segment_instance_id`
+            FROM flight_segment
+            WHERE `flight_id` = #{flight_id}
+        )
+
+    </update>
+
+
+</mapper>

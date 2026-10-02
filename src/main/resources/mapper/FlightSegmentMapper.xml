@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hakimi.aviation.mapper.FlightSegmentMapper">
+
+
+    <insert id="insertBatch">
+
+        INSERT INTO `flight_segment` (flight_id,segment_instance_id,seg_order)
+        VALUES
+            <foreach collection="entity_list" item="item" separator=",">
+                (#{item.flightId},#{item.segmentInstanceId},#{item.segOrder})
+            </foreach>
+
+    </insert>
+
+
+    <select id="selectByFlightIds" resultType="com.hakimi.aviation.entity.SegmentInstance">
+
+        SELECT
+
+    </select>
+
+
+
+</mapper>

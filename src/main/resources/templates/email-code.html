@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>验证码</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #f4f7f6;">
+<div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden;">
+    <div style="background-color: #1890ff; padding: 24px; text-align: center; color: #ffffff; font-size: 24px; font-weight: bold;">
+        邮箱验证服务
+    </div>
+    <div style="padding: 40px 30px;">
+        <p style="font-size: 16px; color: #333333; line-height: 1.6;">尊敬的用户，您好！</p>
+        <p style="font-size: 16px; color: #333333; line-height: 1.6;">您正在进行安全验证，本次请求的验证码为：</p>
+
+        <div style="margin: 30px 0; text-align: center;">
+                <span th:text="${code}" style="display: inline-block; padding: 12px 24px; background-color: #f0f5ff; color: #1890ff; font-size: 32px; font-weight: bold; letter-spacing: 8px; border-radius: 4px; border: 1px dashed #1890ff;">
+                    123456
+                </span>
+        </div>
+
+        <p style="font-size: 14px; color: #999999; margin-top: 30px;">注意：此验证码的有效期为 5 分钟。如非本人操作，请忽略此邮件。</p>
+    </div>
+</div>
+</body>
+</html>

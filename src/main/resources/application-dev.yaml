@@ -1,0 +1,22 @@
+spring:
+  elasticsearch:
+    uris: http://${ES_HOST:127.0.0.1}:19200    # 通过 SSH 将服务器 9200 端口与本机 19200 端口连接起来 防止网络代理对安全组策略的干扰,本地开发环境使用
+
+# 支付宝沙箱配置
+alipay:
+  # ======================================
+  # 两个回调地址
+  # ======================================
+  # 同步跳转地址
+  return-url: "http://localhost:5173/order/detail"
+  # 异步回调地址
+  notify-url: "https://${CPOLAR_DOMAIN}/api/v1/pri/order/pay/callback"
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  configuration:
+    # 开启驼峰命名自动映射 (数据库 flight_no -> Java flightNo)
+    map-underscore-to-camel-case: true
+    # 打印 SQL 日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

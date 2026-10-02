@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101820">
+    <title>云翼航旅 · 本地测试台</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#overview" aria-label="云翼航旅首页">
+          <span class="brand-mark">HA</span>
+          <span><strong>YUNYI AIR</strong><small>LOCAL TESTBENCH</small></span>
+        </a>
+        <div class="side-caption">工作区</div>
+        <nav class="main-nav" aria-label="主导航">
+          <button class="nav-item active" data-panel="overview"><span class="nav-icon">⌂</span>总览</button>
+          <button class="nav-item" data-panel="account"><span class="nav-icon">◎</span>账号与鉴权</button>
+          <button class="nav-item" data-panel="flights"><span class="nav-icon">✈</span>航班查询</button>
+          <button class="nav-item" data-panel="orders"><span class="nav-icon">▤</span>预订与订单</button>
+          <button class="nav-item" data-panel="dev"><span class="nav-icon">⌘</span>开发运维</button>
+          <button class="nav-item" data-panel="console"><span class="nav-icon">{ }</span>自定义请求</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="side-caption">当前会话</div>
+          <div class="session-mini">
+            <span class="avatar">G</span>
+            <span class="session-mini-copy"><strong id="sideUser">游客模式</strong><small id="sideUserId">尚未登录</small></span>
+            <span class="status-dot" id="tokenDot"></span>
+          </div>
+          <div class="sidebar-note">请求仅发送至你配置的本地 API 地址。</div>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div class="breadcrumbs"><span>开发工作区</span><b>/</b><strong id="pageCrumb">总览</strong></div>
+          <div class="topbar-right">
+            <div class="connection-pill"><span class="status-dot" id="apiDot"></span><span id="apiStatus">检测后端中</span></div>
+            <button class="icon-button" id="refreshStatus" title="检查后端连接">↻</button>
+            <a class="mailpit-link" href="http://127.0.0.1:18025" target="_blank" rel="noreferrer">邮件收件箱 ↗</a>
+          </div>
+        </header>
+
+        <div class="content-grid">
+          <div class="page-content">
+            <section class="panel active" id="panel-overview">
+              <div class="hero">
+                <div class="hero-copy">
+                  <div class="eyebrow"><span class="eyebrow-line"></span>YUNYI AIR · LOCAL</div>
+                  <h1>后端功能测试台<span class="accent">.</span></h1>
+                  <p>从一个界面完成 API 联调。请求走本地 Docker 反向代理，登录后可继续测试预订与订单流程。</p>
+                  <button class="button button-primary" data-goto="flights">开始查航班 <span>→</span></button>
+                </div>
+                <div class="hero-stamp"><span>API</span><strong>LAB</strong><small>DEV ENVIRONMENT</small></div>
+                <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+              </div>
+
+              <div class="section-heading">
+                <div><div class="eyebrow">QUICK ACCESS</div><h2>功能模块</h2></div>
+                <span class="muted">选择模块开始联调</span>
+              </div>
+              <div class="feature-grid">
+                <button class="feature-card" data-goto="account">
+                  <span class="feature-icon icon-blue">◎</span><span class="feature-tag">01 · AUTH</span>
+                  <strong>账号与鉴权</strong><small>图形验证码、邮箱验证、登录与 Token</small><span class="card-arrow">↗</span>
+                </button>
+                <button class="feature-card" data-goto="flights">
+                  <span class="feature-icon icon-orange">✈</span><span class="feature-tag">02 · SEARCH</span>
+                  <strong>航班查询</strong><small>ES + Redis 实时搜索与数据库降级</small><span class="card-arrow">↗</span>
+                </button>
+                <button class="feature-card" data-goto="orders">
+                  <span class="feature-icon icon-green">▤</span><span class="feature-tag">03 · ORDER</span>
+                  <strong>预订与订单</strong><small>预订、订单查询、取消、退款与支付</small><span class="card-arrow">↗</span>
+                </button>
+                <button class="feature-card" data-goto="dev">
+                  <span class="feature-icon icon-violet">⌘</span><span class="feature-tag">04 · OPS</span>
+                  <strong>开发运维</strong><small>初始化数据、同步航班与销售状态管理</small><span class="card-arrow">↗</span>
+                </button>
+              </div>
+
+              <div class="section-heading history-heading">
+                <div><div class="eyebrow">ACTIVITY</div><h2>最近请求</h2></div>
+                <button class="text-button" id="clearHistory">清空记录</button>
+              </div>
+              <div class="history-card" id="historyList"><div class="empty-state">还没有请求记录。选择上方模块开始操作。</div></div>
+
+              <div class="notice-strip"><span class="notice-mark">i</span><span><strong>本地环境说明</strong> 支付服务使用禁用的沙箱网关配置；支付接口仅用于观察后端响应，不会自动跳转或完成真实付款。</span></div>
+            </section>
+
+            <section class="panel" id="panel-account">
+              <div class="page-title"><div class="eyebrow">01 · IDENTITY</div><h1>账号与鉴权<span class="accent">.</span></h1><p>登录后 Token 会保存在当前浏览器，可用于后续的预订与订单请求。</p></div>
+              <div class="two-column">
+                <article class="surface-card">
+                  <div class="card-heading"><span class="number-chip">A</span><div><h3>登录</h3><p>使用已有的测试账号获取 JWT</p></div></div>
+                  <form id="loginForm" class="form-stack">
+                    <label>邮箱<input id="loginEmail" type="email" placeholder="name@example.com" required autocomplete="username"></label>
+                    <label>密码<input id="loginPassword" type="password" placeholder="输入账号密码" required autocomplete="current-password"></label>
+                    <button class="button button-primary" type="submit">登录并保存 Token <span>→</span></button>
+                  </form>
+                  <div class="divider-label"><span>当前 Token</span><i></i></div>
+                  <label class="token-label">请求头 <code>token</code><textarea id="tokenInput" rows="3" placeholder="粘贴 Token，或通过上方登录自动填入"></textarea></label>
+                  <div class="button-row"><button class="button button-secondary" id="saveToken">保存 Token</button><button class="button button-quiet" id="clearToken">退出 / 清除</button></div>
+                  <div class="token-meta" id="tokenMeta">未检测到 Token</div>
+                </article>
+                <article class="surface-card">
+                  <div class="card-heading"><span class="number-chip number-chip-orange">B</span><div><h3>注册账号</h3><p>图形验证码 → 邮箱验证码 → 注册</p></div></div>
+                  <form id="registerForm" class="form-stack">
+                    <label>邮箱<input id="registerEmail" type="email" placeholder="name@example.com" required></label>
+                    <div class="captcha-row"><label class="grow">图形验证码<input id="captchaCode" placeholder="输入图片中的字符" autocomplete="off"></label><button class="captcha-image" id="captchaImageButton" type="button" title="点击刷新验证码"><span id="captchaPlaceholder">点击获取</span><img id="captchaImage" alt="图形验证码" hidden></button></div>
+                    <div class="button-row align-end"><label class="grow">邮箱验证码<input id="verifyCode" inputmode="numeric" placeholder="6 位验证码"></label><button class="button button-secondary" id="sendCode" type="button">发送验证码</button></div>
+                    <label>用户名<input id="registerName" placeholder="用于订单乘机人名称"></label>
+                    <label>密码<input id="registerPassword" type="password" placeholder="设置密码" autocomplete="new-password"></label>
+                    <button class="button button-primary" type="submit">创建测试账号 <span>→</span></button>
+                  </form>
+                  <div class="inline-hint" id="registerHint">邮箱验证码可在 <a href="http://127.0.0.1:18025" target="_blank" rel="noreferrer">Mailpit 本地收件箱 ↗</a> 查看。</div>
+                  <input id="captchaKey" type="hidden"><input id="sessionToken" type="hidden">
+                </article>
+              </div>
+              <div class="notice-strip"><span class="notice-mark">!</span><span><strong>鉴权提示</strong> 登录后需要登录的接口会自动携带 Token。无 Token 时仍可测试航班搜索、验证码和开发接口。</span></div>
+            </section>
+
+            <section class="panel" id="panel-flights">
+              <div class="page-title"><div class="eyebrow">02 · FLIGHT SEARCH</div><h1>航班查询<span class="accent">.</span></h1><p>对比高性能搜索与数据库降级接口；选择结果可直接进入预订。</p></div>
+              <article class="surface-card">
+                <div class="card-heading"><span class="number-chip">01</span><div><h3>搜索条件</h3><p>请求体按 FlightSearchRequest 发送</p></div></div>
+                <form id="searchForm" class="search-form">
+                  <label>出发城市<input id="deptCity" value="北京" required></label>
+                  <span class="route-arrow">→</span>
+                  <label>到达城市<input id="arrCity" value="成都" required></label>
+                  <label>出发日期<input id="flightDate" type="date" required></label>
+                  <label>排序<select id="sortType"><option value="1">起飞时间</option><option value="2">价格优先</option></select></label>
+                  <div class="search-actions"><button class="button button-primary" type="submit">高性能搜索</button><button class="button button-secondary" id="dbSearch" type="button">数据库搜索</button></div>
+                </form>
+              </article>
+              <div class="result-heading"><h2>搜索结果</h2><span id="resultCount" class="muted">等待查询</span></div>
+              <div id="flightResults" class="flight-results"><div class="empty-state">设置城市和日期后开始搜索。</div></div>
+            </section>
+
+            <section class="panel" id="panel-orders">
+              <div class="page-title"><div class="eyebrow">03 · BOOKING & ORDERS</div><h1>预订与订单<span class="accent">.</span></h1><p>订单写操作会直接调用后端，请确认使用本地测试账号和数据。</p></div>
+              <article class="surface-card">
+                <div class="card-heading"><span class="number-chip number-chip-green">01</span><div><h3>创建预订</h3><p>选择航班后会自动填充航班 ID；需要有效登录 Token</p></div></div>
+                <form id="bookingForm" class="booking-form">
+                  <label>航班 ID<input id="bookingFlightId" type="number" placeholder="从搜索结果选择，或手动输入"></label>
+                  <label>用户 ID<input id="bookingUserId" type="text" placeholder="登录后从 Token 读取" readonly></label>
+                  <label>座位偏好<select id="seatPrefer"><option value="window">靠窗 window</option><option value="aisle">过道 aisle</option><option value="middle">中间 middle</option></select></label>
+                  <button class="button button-primary" type="submit">提交预订 <span>→</span></button>
+                </form>
+              </article>
+              <div class="order-tools">
+                <article class="surface-card order-list-card">
+                  <div class="card-heading"><span class="number-chip number-chip-green">02</span><div><h3>我的订单</h3><p>从 Token 解析用户身份</p></div></div>
+                  <div class="filter-row"><select id="orderStatus"><option value="">全部状态</option><option>UNPAID</option><option>PAID</option><option>CANCELLED</option><option>REFUNDING</option><option>REFUNDED</option></select><button class="button button-secondary" id="loadOrders">查询订单</button></div>
+                  <div id="orderList" class="order-list"><div class="empty-state compact">登录后查询订单列表。</div></div>
+                </article>
+                <article class="surface-card order-detail-card">
+                  <div class="card-heading"><span class="number-chip number-chip-violet">03</span><div><h3>订单操作</h3><p>支付、详情、取消或申请退款</p></div></div>
+                  <form id="orderDetailForm" class="inline-form"><label class="grow">订单 ID<input id="orderId" inputmode="numeric" placeholder="输入订单主键 ID" required></label><button class="button button-secondary" type="submit">查详情</button></form>
+                  <div class="order-action-grid">
+                    <button class="button button-secondary" id="payOrder">请求支付 HTML</button>
+                    <button class="button button-secondary" id="cancelOrder">取消未支付单</button>
+                    <button class="button button-secondary" id="refundOrder">申请退款</button>
+                  </div>
+                  <div class="inline-hint">支付结果以接口响应展示，不会执行返回的 HTML 表单。</div>
+                  <div id="selectedOrder" class="selected-order empty-state compact">查询订单后，这里显示订单摘要。</div>
+                </article>
+              </div>
+            </section>
+
+            <section class="panel" id="panel-dev">
+              <div class="page-title"><div class="eyebrow">04 · DEV OPERATIONS</div><h1>开发运维<span class="accent">.</span></h1><p>这些是本地开发接口，可初始化演示数据、同步索引或检查航班销售屏障。</p></div>
+              <div class="two-column">
+                <article class="surface-card">
+                  <div class="card-heading"><span class="number-chip number-chip-orange">A</span><div><h3>演示数据</h3><p>生成蓝图航班并同步至 Redis 与 Elasticsearch</p></div></div>
+                  <label>目标日期偏移<input id="initDays" type="number" min="0" value="1"></label>
+                  <div class="button-row ops-buttons"><button class="button button-primary" id="initData">初始化航班数据</button><button class="button button-secondary" id="syncData">同步 DB → Redis / ES</button></div>
+                  <div class="inline-hint">初始化会按指定偏移日期生成航班，重复操作可能产生重复数据。</div>
+                </article>
+                <article class="surface-card">
+                  <div class="card-heading"><span class="number-chip number-chip-violet">B</span><div><h3>销售状态</h3><p>检查暂停原因，修复并同步后恢复销售</p></div></div>
+                  <label>航班 ID<input id="saleFlightId" type="number" value="1" placeholder="Flight ID"></label>
+                  <div class="button-row ops-buttons"><button class="button button-secondary" id="saleState">查询状态</button><button class="button button-primary" id="saleResume">校验并恢复销售</button></div>
+                  <div class="inline-hint">恢复操作会检查数据库航班、Redis 路由和各航段库存。</div>
+                </article>
+                <article class="surface-card span-two">
+                  <div class="card-heading"><span class="number-chip">C</span><div><h3>基于航段创建航班</h3><p>segmentInstanceIds 使用已有航段实例 ID，逗号分隔</p></div></div>
+                  <div class="create-flight-form"><label>航班号<input id="newFlightNo" placeholder="HA9001"></label><label class="grow">航段实例 ID<input id="newSegmentIds" placeholder="例如 1, 2"></label><button class="button button-secondary" id="createFlight">创建并同步</button></div>
+                </article>
+              </div>
+            </section>
+
+            <section class="panel" id="panel-console">
+              <div class="page-title"><div class="eyebrow">05 · API EXPLORER</div><h1>自定义请求<span class="accent">.</span></h1><p>用于测试工作台尚未覆盖的接口，支持 JSON 请求体、查询参数和当前 Token。</p></div>
+              <article class="surface-card">
+                <form id="customRequestForm" class="form-stack">
+                  <div class="custom-url-row"><label>方法<select id="customMethod"><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select></label><label class="grow">API 路径<input id="customPath" value="/pri/flight/search" placeholder="/pri/... 或 /dev/..."></label></div>
+                  <label>查询参数（JSON 对象）<input id="customQuery" placeholder='{"status":"PAID"}'></label>
+                  <label>请求体（JSON）<textarea id="customBody" rows="8" spellcheck="false">{
+  "deptCity": "北京",
+  "arrCity": "成都",
+  "flightDate": "2026-09-28",
+  "sortType": 1
+}</textarea></label>
+                  <label class="check-row"><input id="customNoToken" type="checkbox">此请求不携带当前 Token</label>
+                  <button class="button button-primary" type="submit">发送请求 <span>→</span></button>
+                </form>
+              </article>
+            </section>
+          </div>
+
+          <aside class="inspector">
+            <div class="inspector-header"><div><div class="eyebrow">LIVE INSPECTOR</div><h2>请求详情</h2></div><span class="live-badge"><i></i> LIVE</span></div>
+            <label class="base-url-setting">API Base URL <span class="base-url-input"><input id="apiBase" value="/api/v1" spellcheck="false"><button id="saveBase" title="保存地址">✓</button></span></label>
+            <div class="inspector-section">
+              <div class="inspector-label"><span>REQUEST</span><span id="requestTime">—</span></div>
+              <div class="request-line"><span id="requestMethod" class="method-pill">READY</span><code id="requestUrl">等待发送请求</code></div>
+              <pre class="code-window request-code" id="requestPreview">{
+  "提示": "在左侧选择操作，发送后会展示请求详情"
+}</pre>
+            </div>
+            <div class="inspector-section response-section">
+              <div class="inspector-label"><span>RESPONSE</span><span id="responseStatus">—</span></div>
+              <pre class="code-window response-code" id="responsePreview">{
+  "状态": "等待请求"
+}</pre>
+            </div>
+            <div class="inspector-footer"><span class="pulse-dot"></span><span>Local API Proxy</span><code>127.0.0.1</code></div>
+          </aside>
+        </div>
+        <footer class="page-footer"><span>YUNYI AIR · LOCAL TESTBENCH</span><span>仅用于本地开发联调</span></footer>
+      </main>
+    </div>
+    <div id="toast" class="toast" role="status"></div>
+    <script src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hakimi.aviation.mapper.FlightMapper">
+
+    <select id="searchFlight" resultType="com.hakimi.aviation.entity.Flight">
+
+        SELECT f.*
+        FROM flight f
+        WHERE f.dept_city = #{request.deptCity}
+          AND f.arr_city = #{request.arrCity}
+          AND f.flight_date = #{request.flightDate}
+          AND NOT EXISTS (
+            SELECT 1
+            FROM flight_segment fs
+                     JOIN segment_instance si ON fs.segment_instance_id = si.id
+            WHERE fs.flight_id = f.id
+              AND si.status != 'OPEN'
+        )
+
+    </select>
+
+</mapper>
