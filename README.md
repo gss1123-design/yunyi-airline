@@ -1,14 +1,10 @@
 # 云翼航旅 (Yunyi Air)
 
-> 项目来源：[Hakimi-Airline](https://github.com/Li-xiaotong-cauc/Hakimi-Airline)，原项目作者 Li-xiaotong-cauc（Edison）。本仓库保留本地学习与二次开发版本，包含测试前端、JMeter 脚本和源码学习文档；生成的登录凭据与运行日志不纳入版本控制。
-
-> **你好，世界！** 👋
+> **云翼航旅是我的 Java 后端实战项目。** 项目围绕航空购票场景，覆盖航班搜索、座位分配、订单创建、支付、超时取消及退款流程。
 >
-> 我是 **Edison**，这是我的第二个 Java 后端实战项目。
+> 我通过这个项目实践 Spring Boot、MySQL、Redis、Elasticsearch 和 RabbitMQ 在高并发交易系统中的协作，并配套测试前端与 JMeter 脚本，便于业务联调与性能验证。
 >
-> 项目聚焦于**高并发场景下的并发控制**与**极端异常下的资金与状态安全**。核心交易链路已打通，目前仍在持续迭代中。在面对复杂的故障容灾时，优先采用服务降级、兜底返回与快速失败 + B 端人工介入的策略，防止雪崩并守住资金安全底线。
->
-> 对于边缘故障的容灾处理仍有优化空间。开源的意义在于交流，如果你对高并发抢票、一致性补偿有更好的见解，欢迎提交 Issue 或直接联系我。
+> 项目持续迭代，重点关注库存与座位的并发控制、异步订单处理、订单状态流转和异常恢复。
 >
 > *(核心接口规范请参阅根目录下的 [`APIs.md`](./APIs.md))*
 
@@ -16,7 +12,7 @@
 
 ## 📖 项目简介
 
-**云翼航旅**是一个基于 Spring Boot 3 构建的高并发机票预订系统，模拟了从**航班搜索 → 抢票占座 → 下单支付 → 超时取消 / 退款**的完整机票交易链路。
+**云翼航旅**是我的航空购票后端项目，基于 Spring Boot 3 构建，覆盖**航班搜索 → 抢票占座 → 下单支付 → 超时取消 / 退款**的完整机票交易链路。
 
 项目的核心目标是解决高并发交易场景下的三大经典难题：
 
@@ -604,13 +600,13 @@ curl "http://localhost:8080/dev/flight/sync"
 
 如对高并发抢票、一致性补偿有更好的见解，欢迎交流：
 
-- 📧 **Email**：codeonstring1024@gmail.com
-- 🐛 提交 **Issue** 或 **Pull Request**
+- 💻 **GitHub**：[gss1123-design](https://github.com/gss1123-design)
+- 🐛 提交 [**Issue**](https://github.com/gss1123-design/yunyi-airline/issues) 或 [**Pull Request**](https://github.com/gss1123-design/yunyi-airline/pulls)
 
 ---
 
 > ✈️ **云翼航旅** · 感谢你的阅读！
 >
-> 📅 最后更新：2026-07-28
+> 📅 最后更新：2026-10-03
 >
 > 🏷️ 项目版本：0.0.1-SNAPSHOT
